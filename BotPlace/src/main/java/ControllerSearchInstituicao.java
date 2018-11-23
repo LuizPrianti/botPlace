@@ -1,12 +1,11 @@
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Scanner;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import org.json.JSONObject;
+
 import com.pengrad.telegrambot.model.Update;
 
 public class ControllerSearchInstituicao implements ControllerSearch {
@@ -24,23 +23,38 @@ public class ControllerSearchInstituicao implements ControllerSearch {
 
 	}
 
-	@SuppressWarnings("resource")
+	@SuppressWarnings({ "resource" })
 	public void searchAPI(String latlon, String categoria) throws IOException {
 		String limitePesquisa = "3";
 
-		URL url;
+		String url;
 
-		url = new URL("https://api.foursquare.com/v2/venues/search?ll=" + latlon
+		url = "https://api.foursquare.com/v2/venues/search?ll=" + latlon
 				+ "&client_id=WJCBZKPRLMVOR51PALKM3JOUH2EKTW154YHXGGTKLGWLCH01"
 				+ "&client_secret=CAKZAZQIPOKGPGZOCNTMMPLBAUBHDS4K5PBBHPCVYLGLMMO2" + "&v=20180609" + "&query="
-				+ categoria + "&limit=" + limitePesquisa);
+				+ categoria + "&limit=" + limitePesquisa;
 
-		Scanner scanner;
-		scanner = new Scanner(url.openStream());
-		String json = scanner.next();
-		while (scanner.hasNext())
-			json += " " + scanner.next();
+		try {
+			URL obj = new URL(url);
+			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-		System.out.println(json);
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+			// print in String
+			System.out.println(response.toString());
+			JSONObject myresponse = new JSONObject(response.toString());
+			System.out.println(myresponse);
+			JSONObject APIresponse = new JSONObject(myresponse.getJSONObject("response").toString());
+			Object locais = APIresponse.get("venues");
+			System.out.println(locais);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
+
 }

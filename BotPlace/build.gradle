@@ -30,10 +30,6 @@ dependencies {
     
     // https://mvnrepository.com/artifact/com.squareup.okio/okio
 	compile group: 'com.squareup.okio', name: 'okio', version: '1.10.0'
-    
-    // https://mvnrepository.com/artifact/com.google.code.gson/gson
-	compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
-    
-    
+        
     testCompile 'junit:junit:4.12'
 }

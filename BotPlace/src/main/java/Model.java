@@ -1,8 +1,9 @@
 import java.util.LinkedList;
 import java.util.List;
 
-import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.Update;
+import com.db4o.Db4oEmbedded;
+import com.db4o.ObjectContainer;
+import com.db4o.nativequery.example.Student;
 
 public class Model implements Subject{
 	
@@ -12,9 +13,13 @@ public class Model implements Subject{
 	
 	private static Model uniqueInstance;
 	
+	ObjectContainer locals = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), "bd/locals.db4o");
+
+	
 	private Model(){}
 	
 	public static Model getInstance(){
+		
 		if(uniqueInstance == null){
 			uniqueInstance = new Model();
 		}
@@ -32,7 +37,9 @@ public class Model implements Subject{
 	}
 	
 	public void addInstituicao(Instituicao instituicao){
-		this.instituicao.add(instituicao);
+		locals.store(instituicao);
+		locals.commit();
+		
 	}
 	
 	
